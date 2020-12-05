@@ -1,6 +1,6 @@
 ---
 vagrant:
-  default_box: ubuntu/focal64
+  default_box: ubuntu/xenial64
   default_box_check_update: true
   ssh_insert_key: false
   min_memory: 256
@@ -11,7 +11,7 @@ instances:
   - hostname: node1
     private_ip: 10.10.10.10
     memory: 1512
-    cores: 1
+    cores: 2
     mounts:
       - host_path: ../
         guest_path: /home/vagrant/orchestration-workshop

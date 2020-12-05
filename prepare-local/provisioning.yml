@@ -37,13 +37,19 @@
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
+    - name: fetching kubernetes repo key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
     - name: adding package repos
       apt_repository:
         repo: "{{ item }}"
         state: present
         update_cache: true
       with_items:
-        - deb https://download.docker.com/linux/ubuntu focal stable
+        - deb https://download.docker.com/linux/ubuntu xenial stable
+        - deb https://apt.kubernetes.io/ kubernetes-xenial main
 
     - name: installing docker
       apt:
@@ -54,25 +60,25 @@
         state: present
         update_cache: true
 
+    - name: installing kubeadm related packages
+      apt:
+        name:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: present
+        update_cache: true
+
+    - name: start docker service
+      service:
+        name: docker
+        state: started
+
     - name: adding user vagrant to group docker
       user:
         name: vagrant
         groups: docker
         append: yes
-
-    - name: making docker daemon listen to port 55555
-      lineinfile:
-        dest: /etc/default/docker
-        line: DOCKER_OPTS="--host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:55555"
-        regexp: '^#?DOCKER_OPTS=.*$'
-        state: present
-      register: docker_opts
-
-    - name: restarting docker daemon, if needed
-      service:
-        name: docker
-        state: restarted
-      when: docker_opts is defined and docker_opts.changed
 
     - name: performing pip autoupgrade
       pip:
@@ -86,14 +92,6 @@
 
     - name: Install Docker Compose via PIP
       pip: name=docker-compose
-
-    - name:
-      file:
-        path="/usr/local/bin/docker-compose"
-        state=file
-        mode=0755
-        owner=vagrant
-        group=docker
 
     - name: building the /etc/hosts file with all nodes
       lineinfile:
