@@ -1,6 +1,6 @@
 ---
 - hosts: nodes
-  sudo: true
+  become: true
   vars_files:
     - vagrant.yml
 
@@ -24,25 +24,33 @@
 
     - name: installing dependencies
       apt:
-        name: apt-transport-https,ca-certificates,python-pip,tmux
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - tmux
+          - python3-pip
         state: present
         update_cache: true
 
     - name: fetching docker repo key
       apt_key:
-        keyserver: hkp://p80.pool.sks-keyservers.net:80
-        id: 58118E89F3A912897C070ADBF76221572C52609D
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
 
     - name: adding package repos
       apt_repository:
         repo: "{{ item }}"
         state: present
+        update_cache: true
       with_items:
-        - deb https://apt.dockerproject.org/repo ubuntu-trusty main
+        - deb https://download.docker.com/linux/ubuntu focal stable
 
     - name: installing docker
       apt:
-        name: docker-engine
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
         state: present
         update_cache: true
 
