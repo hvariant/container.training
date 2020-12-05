@@ -10,7 +10,7 @@ instances:
 
   - hostname: node1
     private_ip: 10.10.10.10
-    memory: 1512
+    memory: 3072
     cores: 2
     mounts:
       - host_path: ../
@@ -20,22 +20,17 @@ instances:
 
   - hostname: node2
     private_ip: 10.10.10.20
-    memory: 512
+    memory: 1024
     cores: 1
 
   - hostname: node3
     private_ip: 10.10.10.30
-    memory: 512
+    memory: 1024
     cores: 1
 
   - hostname: node4
     private_ip: 10.10.10.40
-    memory: 512
-    cores: 1
-
-  - hostname: node5
-    private_ip: 10.10.10.50
-    memory: 512
+    memory: 1024
     cores: 1
 
 
